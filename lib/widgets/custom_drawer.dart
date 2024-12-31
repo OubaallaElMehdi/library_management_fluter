@@ -10,7 +10,7 @@ class CustomDrawer extends StatelessWidget {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token'); // Remove the token
 
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.pushReplacementNamed(context, '/'); // Navigate to login page
   }
 
   @override
@@ -39,7 +39,13 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.library_books),
             title: const Text('Book Catalog'),
             onTap: () {
-              Navigator.pushNamed(context, '/catalog');
+              // Navigate based on role
+              if (role == 'Admin') {
+                Navigator.pushNamed(
+                    context, '/admin-book-page'); // Admin catalog
+              } else {
+                Navigator.pushNamed(context, '/user-book-page'); // User catalog
+              }
             },
           ),
           if (role == 'Admin') ...[

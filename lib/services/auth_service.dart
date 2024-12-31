@@ -14,7 +14,9 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final data = jsonDecode(response.body);
+      await saveToken(data['accessToken']); // Save the token
+      return data;
     } else {
       throw Exception('Login failed: ${response.body}');
     }
