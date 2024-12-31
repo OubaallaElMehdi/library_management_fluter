@@ -51,6 +51,13 @@ class CustomDrawer extends StatelessWidget {
           if (role == 'Admin') ...[
             ListTile(
               leading: const Icon(Icons.manage_accounts),
+              title: const Text('Book Management Page'),
+              onTap: () {
+                Navigator.pushNamed(context, '/admin_book_management');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.manage_accounts),
               title: const Text('Manage Users'),
               onTap: () {
                 Navigator.pushNamed(context, '/manage-users');

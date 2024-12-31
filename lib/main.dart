@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/views/admin/admin_dashboard.dart';
+import 'package:library_management/views/admin/book_management.dart';
 import 'package:library_management/views/user/user_dashboard.dart';
 import 'package:library_management/views/admin/book_admin_page.dart'; // New Admin Book Page
 import 'package:library_management/views/user/book_user_page.dart'; // New User Book Page
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
               body: const Center(child: Text('Admin Settings Page')),
             ),
         // New Routes
+        '/admin_book_management': (context) =>
+            const BookManagementPage(), // New Admin Book Management Page
+
         '/admin-book-page': (context) => const BookAdminPage(),
         '/user-book-page': (context) => const BookUserPage(),
       },
