@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookService {
-  final String baseUrl = 'http://192.168.1.9:8036';
+  final String baseUrl = 'http://localhost:8036';
 
   Future<Map<String, dynamic>> fetchPaginatedBooks({
     required String endpoint,
