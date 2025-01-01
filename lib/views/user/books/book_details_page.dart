@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../services/book_service.dart';
+import '../../../services/reservation_service.dart';
 import '../../../models/book.dart';
 
 class BookDetailsPage extends StatefulWidget {
@@ -13,12 +14,44 @@ class BookDetailsPage extends StatefulWidget {
 
 class _BookDetailsPageState extends State<BookDetailsPage> {
   final BookService bookService = BookService();
+  final ReservationService reservationService = ReservationService();
   late Future<Book> bookFuture;
 
   @override
   void initState() {
     super.initState();
     bookFuture = bookService.findByIdClient(widget.bookId);
+  }
+
+  Future<void> makeReservation(Book book) async {
+    final reservationData = {
+      "code": "aaaa", // You can replace this with dynamic code
+      "requestDate": DateTime.now().toIso8601String(),
+      "theoreticalReturnDate":
+          DateTime.now().add(Duration(days: 7)).toIso8601String(),
+      "effectiveReturnDate": null,
+      "client": {
+        "id": 2, // Replace with actual client ID from logged-in user
+        "credentialsNonExpired": true,
+        "enabled": true,
+        "email": "client",
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "username": "client",
+        "passwordChanged": false
+      }
+    };
+
+    try {
+      await reservationService.createReservation(reservationData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reservation successful!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error creating reservation: ${e.toString()}')),
+      );
+    }
   }
 
   @override
@@ -102,8 +135,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   // Reserve Button
                   ElevatedButton(
                     onPressed: () {
-                      // Add reserve functionality here
-                      print(book.id);
+                      makeReservation(book); // Call makeReservation
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 4, 130, 233),

@@ -30,10 +30,10 @@ class MyApp extends StatelessWidget {
         '/admin-settings': (context) => Scaffold(
             appBar: AppBar(title: const Text('Admin Settings')),
             body: const Center(child: Text('Admin Settings Page'))),
-        '/admin_book_management': (context) => const BookManagementPage(),
-        '/manage-users': (context) => const ListUserPage(),
-        '/admin-book-page': (context) => const BookAdminPage(),
-        '/user-book-page': (context) => const BookUserPage(),
+        '/admin_manage_book': (context) => const BookManagementPage(),
+        '/admin_list_user': (context) => const ListUserPage(),
+        '/admin_list_book': (context) => const BookAdminPage(),
+        '/user-list-book': (context) => const BookUserPage(),
       },
       onGenerateRoute: (settings) {
         // Check if the route is for updating a user

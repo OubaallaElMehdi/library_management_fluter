@@ -42,9 +42,9 @@ class CustomDrawer extends StatelessWidget {
               // Navigate based on role
               if (role == 'Admin') {
                 Navigator.pushNamed(
-                    context, '/admin-book-page'); // Admin catalog
+                    context, '/admin_list_book'); // Admin catalog
               } else {
-                Navigator.pushNamed(context, '/user-book-page'); // User catalog
+                Navigator.pushNamed(context, '/user-list-book'); // User catalog
               }
             },
           ),
@@ -53,14 +53,14 @@ class CustomDrawer extends StatelessWidget {
               leading: const Icon(Icons.manage_accounts),
               title: const Text('Book Management Page'),
               onTap: () {
-                Navigator.pushNamed(context, '/admin_book_management');
+                Navigator.pushNamed(context, '/admin_manage_book');
               },
             ),
             ListTile(
               leading: const Icon(Icons.manage_accounts),
               title: const Text('Manage Users'),
               onTap: () {
-                Navigator.pushNamed(context, '/manage-users');
+                Navigator.pushNamed(context, '/admin_list_user');
               },
             ),
             ListTile(
