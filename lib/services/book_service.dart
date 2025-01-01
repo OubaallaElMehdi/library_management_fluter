@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:library_management/models/book.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookService {
@@ -128,6 +129,52 @@ class BookService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete book: ${response.body}');
+    }
+  }
+
+  Future<Book> findById(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/admin/book/id/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Book.fromJson(data);
+    } else {
+      throw Exception('Failed to find book with ID $id: ${response.body}');
+    }
+  }
+
+  Future<Book> findByIdClient(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/client/book/id/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Book.fromJson(data);
+    } else {
+      throw Exception('Failed to find book with ID $id: ${response.body}');
     }
   }
 }

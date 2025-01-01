@@ -4,7 +4,7 @@ import 'package:library_management/services/user_service.dart';
 import 'package:library_management/views/admin/user_managment/update_user.dart';
 
 class ListUserPage extends StatefulWidget {
-  const ListUserPage({Key? key}) : super(key: key);
+  const ListUserPage({super.key});
 
   @override
   State<ListUserPage> createState() => _ListUserPageState();

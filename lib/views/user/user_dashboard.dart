@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/widgets/custom_drawer.dart';
-import 'package:library_management/widgets/custom_text_field.dart';
 
 class UserDashboard extends StatelessWidget {
-  const UserDashboard({Key? key}) : super(key: key);
+  const UserDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {

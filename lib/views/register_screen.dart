@@ -13,6 +13,8 @@ class RegisterPage extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  RegisterPage({super.key});
+
   Future<void> handleRegister(BuildContext context) async {
     try {
       final response = await http.post(
@@ -44,7 +46,7 @@ class RegisterPage extends StatelessWidget {
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred. Please try again.')),
+        const SnackBar(content: Text('An error occurred. Please try again.')),
       );
     }
   }

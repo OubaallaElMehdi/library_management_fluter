@@ -37,4 +37,19 @@ class Book {
       authorName: json['author']['fullName'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'label': label,
+      'code': code,
+      'title': title,
+      'editionDate': editionDate,
+      'description': description,
+      'numberOfCopies': numberOfCopies,
+      'available': available,
+      'imageUrl': imageUrl,
+      'authorName': authorName,
+    };
+  }
 }

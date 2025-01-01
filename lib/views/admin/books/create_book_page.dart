@@ -3,7 +3,7 @@ import 'package:intl/intl.dart'; // For formatting dates
 import '../../../services/book_service.dart';
 
 class CreateBookPage extends StatefulWidget {
-  const CreateBookPage({Key? key}) : super(key: key);
+  const CreateBookPage({super.key});
 
   @override
   State<CreateBookPage> createState() => _CreateBookPageState();

@@ -4,7 +4,7 @@ import '../../../services/book_service.dart';
 class UpdateBookPage extends StatefulWidget {
   final Map<String, dynamic> book;
 
-  const UpdateBookPage({Key? key, required this.book}) : super(key: key);
+  const UpdateBookPage({super.key, required this.book});
 
   @override
   State<UpdateBookPage> createState() => _UpdateBookPageState();

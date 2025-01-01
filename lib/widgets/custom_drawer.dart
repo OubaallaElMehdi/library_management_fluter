@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CustomDrawer extends StatelessWidget {
   final String role; // Either "Admin" or "User"
 
-  const CustomDrawer({Key? key, required this.role}) : super(key: key);
+  const CustomDrawer({super.key, required this.role});
 
   void handleLogout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -19,13 +19,13 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
+          const DrawerHeader(
+            decoration: BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(Icons.book, size: 50, color: Colors.white),
                 SizedBox(height: 10),
                 Text(

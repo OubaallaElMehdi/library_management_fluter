@@ -5,7 +5,7 @@ import 'package:library_management/services/user_service.dart';
 class UpdateUserPage extends StatefulWidget {
   final Client user;
 
-  const UpdateUserPage({Key? key, required this.user}) : super(key: key);
+  const UpdateUserPage({super.key, required this.user});
 
   @override
   State<UpdateUserPage> createState() => _UpdateUserPageState();

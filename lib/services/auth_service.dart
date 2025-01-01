@@ -29,6 +29,8 @@ class AuthService {
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -57,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (error) {
       print('Login failed: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed. Please try again.')),
+        const SnackBar(content: Text('Login failed. Please try again.')),
       );
     }
   }
@@ -65,25 +67,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
             TextField(
               controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: handleLogin,
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
           ],
         ),
