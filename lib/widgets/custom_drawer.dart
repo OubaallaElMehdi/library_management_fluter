@@ -10,73 +10,116 @@ class CustomDrawer extends StatelessWidget {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token'); // Remove the token
 
-    Navigator.pushReplacementNamed(context, '/'); // Navigate to login page
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Colors.white30,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.book, size: 50, color: Colors.white),
-                SizedBox(height: 10),
-                Text(
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 80,
+                ),
+                const SizedBox(height: 10),
+                const Text(
                   'Library App',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.library_books),
-            title: const Text('Book Catalog'),
-            onTap: () {
-              // Navigate based on role
-              if (role == 'Admin') {
-                Navigator.pushNamed(
-                    context, '/admin-book-page'); // Admin catalog
-              } else {
-                Navigator.pushNamed(context, '/user-book-page'); // User catalog
-              }
-            },
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.library_books,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                  ),
+                  title: const Text('Book Catalog'),
+                  onTap: () {
+                    // Navigate based on role
+                    if (role == 'Admin') {
+                      Navigator.pushNamed(
+                          context, '/admin-book-page');
+                    } else {
+                      Navigator.pushNamed(
+                          context, '/user-book-page'); 
+                    }
+                  },
+                ),
+                if (role == 'Admin') ...[
+                  ListTile(
+                    leading: const Icon(
+                      Icons.manage_accounts,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('Book Management Page'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/admin_book_management');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.manage_accounts,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('Manage Users'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/manage-users');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.settings,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('Admin Settings'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/admin-settings');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.settings,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('ChatBot'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/admin-settings');
+                    },
+                  ),
+                ],
+              ],
+            ),
           ),
-          if (role == 'Admin') ...[
-            ListTile(
-              leading: const Icon(Icons.manage_accounts),
-              title: const Text('Book Management Page'),
+          const Divider(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red),
+              ),
               onTap: () {
-                Navigator.pushNamed(context, '/admin_book_management');
+                handleLogout(context);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.manage_accounts),
-              title: const Text('Manage Users'),
-              onTap: () {
-                Navigator.pushNamed(context, '/manage-users');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Admin Settings'),
-              onTap: () {
-                Navigator.pushNamed(context, '/admin-settings');
-              },
-            ),
-          ],
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {
-              handleLogout(context);
-            },
           ),
         ],
       ),
