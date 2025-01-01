@@ -57,8 +57,9 @@ class UserService {
     }
   }
 
-  // Delete user
+// Delete user
   Future<void> deleteUser(int userId) async {
+    // userId is now a String
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
 
@@ -67,7 +68,8 @@ class UserService {
     }
 
     final response = await http.delete(
-      Uri.parse('$baseUrl/id/$userId'), // Corrected URL for deletion
+      Uri.parse(
+          '$baseUrl/id/$userId'), // userId should be passed as a String in the URL
       headers: {
         'Authorization': 'Bearer $token',
       },

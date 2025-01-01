@@ -31,11 +31,12 @@ class _ListUserPageState extends State<ListUserPage> {
     );
   }
 
-  void deleteUser(String userId) async {
+  void deleteUser(int userId) async {
     try {
-      await userService.deleteUser(int.parse(userId));
+      // Call the deleteUser function with the userId as a String
+      await userService.deleteUser(userId);
       setState(() {
-        usersFuture = fetchUsers();
+        usersFuture = fetchUsers(); // Refresh the user list after deletion
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User deleted successfully')),
