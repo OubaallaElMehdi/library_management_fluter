@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:library_management/services/book_service.dart';
 import 'package:library_management/services/reservation_service.dart';
-import '../../../services/book_service.dart';
-import '../../../models/book.dart';
+import 'package:library_management/models/book.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookDetailsPage extends StatefulWidget {
   final int bookId;
@@ -14,16 +16,17 @@ class BookDetailsPage extends StatefulWidget {
 
 class _BookDetailsPageState extends State<BookDetailsPage> {
   final BookService bookService = BookService();
+  final ReservationService reservationService = ReservationService();
+
   late Future<Book> bookFuture;
 
-  // Controllers for reservation details
-  final TextEditingController codeController = TextEditingController();
-  final TextEditingController requestDateController = TextEditingController();
-  final TextEditingController theoreticalReturnDateController =
+  TextEditingController codeController = TextEditingController();
+  TextEditingController requestDateController = TextEditingController();
+  TextEditingController theoreticalReturnDateController =
       TextEditingController();
 
-  DateTime? selectedRequestDate;
-  DateTime? selectedReturnDate;
+  DateTime selectedRequestDate = DateTime.now();
+  DateTime selectedReturnDate = DateTime.now();
 
   @override
   void initState() {
@@ -31,143 +34,77 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     bookFuture = bookService.findByIdClient(widget.bookId);
   }
 
-  // Method to show the reservation dialog
-  void _showReservationDialog(Book book) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Create Reservation'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Reservation Code
-                TextField(
-                  controller: codeController,
-                  decoration:
-                      const InputDecoration(labelText: 'Reservation Code'),
-                ),
-                const SizedBox(height: 16),
-                // Request Date Picker
-                TextField(
-                  controller: requestDateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: 'Request Date',
-                    hintText: selectedRequestDate == null
-                        ? 'Select Request Date'
-                        : selectedRequestDate.toString(),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.calendar_today),
-                      onPressed: () async {
-                        final DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101),
-                        );
-                        if (pickedDate != null &&
-                            pickedDate != selectedRequestDate) {
-                          setState(() {
-                            selectedRequestDate = pickedDate;
-                            requestDateController.text = selectedRequestDate!
-                                .toLocal()
-                                .toString()
-                                .split(' ')[0];
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Theoretical Return Date Picker
-                TextField(
-                  controller: theoreticalReturnDateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: 'Theoretical Return Date',
-                    hintText: selectedReturnDate == null
-                        ? 'Select Return Date'
-                        : selectedReturnDate.toString(),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.calendar_today),
-                      onPressed: () async {
-                        final DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101),
-                        );
-                        if (pickedDate != null &&
-                            pickedDate != selectedReturnDate) {
-                          setState(() {
-                            selectedReturnDate = pickedDate;
-                            theoreticalReturnDateController.text =
-                                selectedReturnDate!
-                                    .toLocal()
-                                    .toString()
-                                    .split(' ')[0];
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Reserve Button inside Dialog
-                ElevatedButton(
-                  onPressed: () {
-                    if (codeController.text.isNotEmpty &&
-                        selectedRequestDate != null &&
-                        selectedReturnDate != null) {
-                      final reservationData = {
-                        "code": codeController.text,
-                        "requestDate": selectedRequestDate!.toIso8601String(),
-                        "theoreticalReturnDate":
-                            selectedReturnDate!.toIso8601String(),
-                        "effectiveReturnDate": null,
-                        "client": {
-                          "id": 2, // Example client ID, should be dynamic
-                          "credentialsNonExpired": true,
-                          "enabled": true,
-                          "email": "client",
-                          "accountNonExpired": true,
-                          "accountNonLocked": true,
-                          "username": "client",
-                          "passwordChanged": false
-                        }
-                      };
+  // Function to create reservation
+  Future<void> createReservation() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? username = prefs.getString('username'); // Retrieve username
+      final String? email = prefs.getString('email'); // Retrieve email
 
-                      ReservationService()
-                          .createReservation(reservationData)
-                          .then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text('Reservation successfully created')));
-                        Navigator.pop(context); // Close the dialog
-                      }).catchError((e) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Failed to create reservation: $e')));
-                      });
-                    }
-                  },
-                  child: const Text('Reserve Now'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+      if (username == null || email == null) {
+        throw Exception('Client username or email not found');
+      }
+
+      final reservationData = {
+        "code": codeController.text,
+        "requestDate": requestDateController.text,
+        "theoreticalReturnDate": theoreticalReturnDateController.text,
+        "effectiveReturnDate": null,
+        "reservationItems": [],
+        "client": {
+          "username": username, // Use the dynamically fetched username
+          "email": email, // Use the dynamically fetched email
+          "credentialsNonExpired": true,
+          "enabled": true,
+          "accountNonExpired": true,
+          "accountNonLocked": true,
+          "passwordChanged": false
+        }
+      };
+
+      await reservationService.createReservation(reservationData);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reservation successfully created')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Failed to create reservation: ${e.toString()}')),
+      );
+    }
+  }
+
+  // Function to pick a date
+  Future<void> _selectDate(BuildContext context,
+      TextEditingController controller, bool isReturnDate) async {
+    final DateTime picked = await showDatePicker(
+          context: context,
+          initialDate: isReturnDate ? selectedReturnDate : selectedRequestDate,
+          firstDate: DateTime(2020),
+          lastDate: DateTime(2101),
+        ) ??
+        DateTime.now();
+
+    setState(() {
+      if (isReturnDate) {
+        selectedReturnDate = picked;
+        theoreticalReturnDateController.text =
+            DateFormat('yyyy-MM-dd').format(selectedReturnDate);
+      } else {
+        selectedRequestDate = picked;
+        requestDateController.text =
+            DateFormat('yyyy-MM-dd').format(selectedRequestDate);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Details'),
+        title: const Text('Details'),
         centerTitle: true,
       ),
       body: FutureBuilder<Book>(
@@ -176,18 +113,13 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}',
-                  style: const TextStyle(color: Colors.red)),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return const Center(
-              child: Text('Book not found.',
-                  style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic)),
-            );
+            return const Center(child: Text('Book not found.'));
           }
 
           final book = snapshot.data!;
+
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -229,10 +161,59 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                     style: const TextStyle(fontSize: 16.0, height: 1.5),
                   ),
                   const SizedBox(height: 32.0),
-                  // Reserve Button
+
+                  // Reserve Button (opens reservation dialog)
                   ElevatedButton(
                     onPressed: () {
-                      _showReservationDialog(book); // Show reservation dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Fill Reservation Details'),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: codeController,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Reservation Code'),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextField(
+                                    controller: requestDateController,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Request Date'),
+                                    readOnly: true,
+                                    onTap: () => _selectDate(
+                                        context, requestDateController, false),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextField(
+                                    controller: theoreticalReturnDateController,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Theoretical Return Date'),
+                                    readOnly: true,
+                                    onTap: () => _selectDate(context,
+                                        theoreticalReturnDateController, true),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: createReservation,
+                                child: const Text('Reserve Now'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 4, 130, 233),
