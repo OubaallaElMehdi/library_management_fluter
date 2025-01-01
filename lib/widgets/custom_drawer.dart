@@ -54,9 +54,9 @@ class CustomDrawer extends StatelessWidget {
                   onTap: () {
                     // Navigate based on role
                     if (role == 'Admin') {
-                      Navigator.pushNamed(context, '/admin-book-page');
+                      Navigator.pushNamed(context, '/admin_list_book');
                     } else {
-                      Navigator.pushNamed(context, '/user-book-page');
+                      Navigator.pushNamed(context, '/user-list-book');
                     }
                   },
                 ),
@@ -68,7 +68,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     title: const Text('Book Management Page'),
                     onTap: () {
-                      Navigator.pushNamed(context, '/admin_book_management');
+                      Navigator.pushNamed(context, '/admin_manage_book');
                     },
                   ),
                   ListTile(
@@ -78,7 +78,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                     title: const Text('Manage Users'),
                     onTap: () {
-                      Navigator.pushNamed(context, '/manage-users');
+                      Navigator.pushNamed(context, '/admin_list_user');
                     },
                   ),
                   ListTile(
