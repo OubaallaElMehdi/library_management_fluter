@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
 
-class UserDashboard extends StatelessWidget {
-  const UserDashboard({Key? key}) : super(key: key);
+import '../../models/user.dart';
+import '../../services/user_service.dart';
+
+class ManageUsers extends StatefulWidget {
+  const ManageUsers({Key? key}) : super(key: key);
+
+  @override
+  _ManageUsersState createState() => _ManageUsersState();
+}
+
+class _ManageUsersState extends State<ManageUsers> {
+  final UserService clientService = UserService();
+  late Future<List<Client>> futureClients;
+
+  @override
+  void initState() {
+    super.initState();
+    futureClients = clientService.fetchUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,25 +42,43 @@ class UserDashboard extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
           children: [
-            UserCard(
-              fullname: 'Khalil Zouizza',
-              email: 'KhalilZouizza@gmail.com',
-              phone: '+212 777 777 777',
-              role: 'Admin',
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Search',
+                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.search),
+              ),
             ),
-            UserCard(
-              fullname: 'Khalil Zouizza',
-              email: 'KhalilZouizza@gmail.com',
-              phone: '+212 777 777 777',
-              role: 'Admin',
-            ),
-            UserCard(
-              fullname: 'Khalil Zouizza',
-              email: 'KhalilZouizza@gmail.com',
-              phone: '+212 777 777 777',
-              role: 'Admin',
+            const SizedBox(height: 16.0),
+            Expanded(
+              child: FutureBuilder<List<Client>>(
+                future: futureClients,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No clients available.'));
+                  }
+
+                  final clients = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: clients.length,
+                    itemBuilder: (context, index) {
+                      final client = clients[index];
+                      return UserCard(
+                        fullname: client.fullname,
+                        email: client.email,
+                        phone: client.phone,
+                        role: client.role,
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -69,6 +104,7 @@ class UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.lightBlue[100],
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
