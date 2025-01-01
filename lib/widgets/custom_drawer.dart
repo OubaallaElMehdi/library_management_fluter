@@ -48,17 +48,15 @@ class CustomDrawer extends StatelessWidget {
                 ListTile(
                   leading: const Icon(
                     Icons.library_books,
-                      color: Color.fromARGB(255, 4, 95, 169),
+                    color: Color.fromARGB(255, 4, 95, 169),
                   ),
                   title: const Text('Book Catalog'),
                   onTap: () {
                     // Navigate based on role
                     if (role == 'Admin') {
-                      Navigator.pushNamed(
-                          context, '/admin-book-page');
+                      Navigator.pushNamed(context, '/admin-book-page');
                     } else {
-                      Navigator.pushNamed(
-                          context, '/user-book-page'); 
+                      Navigator.pushNamed(context, '/user-book-page');
                     }
                   },
                 ),
@@ -95,12 +93,12 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(
-                      Icons.settings,
+                      Icons.chat,
                       color: Color.fromARGB(255, 4, 95, 169),
                     ),
                     title: const Text('ChatBot'),
                     onTap: () {
-                      Navigator.pushNamed(context, '/admin-settings');
+                      Navigator.pushNamed(context, '/chatbot');
                     },
                   ),
                 ],

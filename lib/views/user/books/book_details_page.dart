@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:library_management/views/user/reservation/reservation_page.dart';
 import '../../../services/book_service.dart';
 import '../../../models/book.dart';
 
@@ -102,8 +103,14 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   // Reserve Button
                   ElevatedButton(
                     onPressed: () {
-                      // Add reserve functionality here
-                      print(book.id);
+                      // Navigate to ReservationPage where user can enter the reservation details
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ReservationPage(bookId: book.id),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 4, 130, 233),
