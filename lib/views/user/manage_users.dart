@@ -17,7 +17,9 @@ class _ManageUsersState extends State<ManageUsers> {
   @override
   void initState() {
     super.initState();
-    futureClients = clientService.fetchUsers();
+    futureClients = clientService.fetchUsers().then((clients) => 
+      clients.map((dto) => Client.fromDto(dto)).toList()
+    );
   }
 
   @override

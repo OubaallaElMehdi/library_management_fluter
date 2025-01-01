@@ -1,3 +1,5 @@
+import 'client_dto.dart';
+
 class Client {
   final String fullname;
   final String email;
@@ -17,6 +19,15 @@ class Client {
       email: json['email'],
       phone: json['phone'],
       role: json['role'],
+    );
+  }
+
+  factory Client.fromDto(ClientDto dto) {
+    return Client(
+      fullname: dto.fullname,
+      email: dto.email,
+      phone: dto.phone,
+      role: dto.role,
     );
   }
 }

@@ -1,35 +1,36 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/user.dart';
+//import '../models/user.dart';
 //import '../models/user_model.dart';
+import '../api_config.dart';
+import '../models/client_dto.dart';
 
 class UserService {
-  final String baseUrl = 'http://localhost:8037/api/client/client/';
+  final String baseUrl = 'http://localhost:8037/api/user/';
 
- Future<List<Client>> fetchUsers() async {
-  final prefs = await SharedPreferences.getInstance();
-  final String? token = prefs.getString('token');
-
-  if (token == null) {
-    throw Exception('User is not authenticated');
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
   }
 
-  final response = await http.get(
-    Uri.parse(baseUrl),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
+  Future<List<ClientDto>> fetchUsers() async {
+    final response = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/user/'),
+      headers: {
+        'Authorization': 'Bearer ${await getToken()}',
+      },
+    );
 
-  if (response.statusCode == 200) {
-    List<dynamic> jsonResponse = json.decode(response.body);
-    return jsonResponse.map((user) => Client.fromJson(user)).toList();
-  } else {
-    throw Exception('Failed to fetch users: ${response.body}');
+    if (response.statusCode == 200) {
+      List<dynamic> jsonList = jsonDecode(response.body);
+      return jsonList.map((json) => ClientDto.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to fetch users: ${response.body}');
+    }
   }
-}
- Future<void> createUser(Map<String, dynamic> userData) async {
+
+  Future<void> createUser(Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
 
