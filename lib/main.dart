@@ -9,6 +9,7 @@ import 'package:library_management/views/admin/books/book_admin_page.dart';
 import 'package:library_management/views/user/books/book_user_page.dart';
 import 'views/login_screen.dart';
 import 'views/register_screen.dart';
+import 'views/user/reservation/reservation_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
         '/admin_list_user': (context) => const ListUserPage(),
         '/admin_list_book': (context) => const BookAdminPage(),
         '/user-list-book': (context) => const BookUserPage(),
+        '/reservation': (context) =>
+            const ReservationPage(bookId: 0), // New Reservation Route
+        // New route for reservation
       },
       onGenerateRoute: (settings) {
         // Check if the route is for updating a user
