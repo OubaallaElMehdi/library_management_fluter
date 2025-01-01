@@ -47,33 +47,142 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Login', style: TextStyle(fontSize: 24)),
-            const SizedBox(height: 16),
-            CustomTextField(
-                hintText: 'Username', controller: usernameController),
-            const SizedBox(height: 16),
-            CustomTextField(
-                hintText: 'Password',
-                controller: passwordController,
-                obscureText: true),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: handleLogin,
-              child: const Text('Login'),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 40),
+                // Logo Section
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 80,
+                ),
+                const SizedBox(height: 40),
+
+                // Login Title
+                const Text(
+                  'Login',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Enter your email and password',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Email Input
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Email:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                CustomTextField(
+                  hintText: 'Enter your email',
+                  controller: usernameController,
+                ),
+                const SizedBox(height: 16),
+
+                // Password Input
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Password:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                CustomTextField(
+                  hintText: 'Enter your password',
+                  controller: passwordController,
+                  obscureText: true,
+                ),
+                const SizedBox(height: 24),
+
+                // Login Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF004AAD),
+                      padding: const EdgeInsets.symmetric(vertical: 14.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Register and Forget Password Links
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Don’t have an account? ',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/register');
+                      },
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () {
+                    // Forget password logic here
+                  },
+                  child: const Text(
+                    'Forget Password?',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/register');
-              },
-              child: const Text('Don’t have an account? Register'),
-            ),
-          ],
+          ),
         ),
       ),
     );
