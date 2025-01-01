@@ -44,12 +44,12 @@ class UserService {
     }
 
     final response = await http.put(
-      Uri.parse('$baseUrl/id/${userData['id']}'),
+      Uri.parse('$baseUrl/'), // Correct endpoint: no need for `/id/`
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(userData),
+      body: jsonEncode(userData), // Ensure the userData is correct
     );
 
     if (response.statusCode != 200) {
@@ -67,7 +67,7 @@ class UserService {
     }
 
     final response = await http.delete(
-      Uri.parse('$baseUrl/id/$userId'),
+      Uri.parse('$baseUrl/id/$userId'), // Corrected URL for deletion
       headers: {
         'Authorization': 'Bearer $token',
       },

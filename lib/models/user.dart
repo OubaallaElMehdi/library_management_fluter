@@ -1,26 +1,31 @@
 class Client {
-  final String id; // Make sure id is defined as String here
-  final String fullname;
+  final String id;
   final String email;
+  final String username;
   final String phone;
   final String role;
+  final String firstName;
+  final String lastName;
 
   Client({
     required this.id,
-    required this.fullname,
     required this.email,
+    required this.username,
     required this.phone,
     required this.role,
+    required this.firstName,
+    required this.lastName,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) {
     return Client(
-      id: json['id']
-          .toString(), // Ensure the id is converted to a String if it's an int
-      fullname: json['fullname'],
-      email: json['email'],
-      phone: json['phone'],
-      role: json['role'],
+      id: json['id'].toString(),
+      email: json['email'] ?? 'Unknown Email',
+      username: json['username'] ?? 'Unknown Username',
+      phone: json['phone'] ?? 'Unknown Phone',
+      role: json['roleUsers'][0]['role']['authority'] ?? 'Unknown Role',
+      firstName: json['firstName'] ?? 'Unknown First Name',
+      lastName: json['lastName'] ?? 'Unknown Last Name',
     );
   }
 }

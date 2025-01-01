@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:library_management/services/user_service.dart';
 import 'package:library_management/models/user.dart';
+import 'package:library_management/services/user_service.dart';
+import 'package:library_management/views/admin/user_managment/update_user.dart';
 
 class ListUserPage extends StatefulWidget {
   const ListUserPage({Key? key}) : super(key: key);
@@ -62,78 +63,6 @@ class _ListUserPageState extends State<ListUserPage> {
     }
   }
 
-  void showUpdateUserDialog(Client user) {
-    final fullnameController = TextEditingController(text: user.fullname);
-    final emailController = TextEditingController(text: user.email);
-    final phoneController = TextEditingController(text: user.phone);
-    final roleController = TextEditingController(text: user.role);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Update User'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: fullnameController,
-                  decoration: const InputDecoration(labelText: 'Full Name'),
-                ),
-                TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: phoneController,
-                  decoration: const InputDecoration(labelText: 'Phone'),
-                ),
-                TextField(
-                  controller: roleController,
-                  decoration: const InputDecoration(labelText: 'Role'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  await userService.updateUser({
-                    'id': user.id,
-                    'fullname': fullnameController.text,
-                    'email': emailController.text,
-                    'phone': phoneController.text,
-                    'role': roleController.text,
-                  });
-                  Navigator.pop(context); // Close the dialog
-                  setState(() {
-                    usersFuture = fetchUsers(); // Refresh the user list
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('User updated successfully')),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Error updating user: ${e.toString()}')),
-                  );
-                }
-              },
-              child: const Text('Update'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +89,7 @@ class _ListUserPageState extends State<ListUserPage> {
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
-                        title: Text(user['fullname'] ?? 'Unknown Name'),
+                        title: Text(user['firstName'] ?? 'Unknown Name'),
                         subtitle: Text(user['email'] ?? 'Unknown Email'),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -168,8 +97,17 @@ class _ListUserPageState extends State<ListUserPage> {
                             IconButton(
                               icon: const Icon(Icons.edit, color: Colors.green),
                               onPressed: () {
-                                showUpdateUserDialog(Client.fromJson(
-                                    user)); // Show dialog for editing user
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UpdateUserPage(
+                                        user: Client.fromJson(user)),
+                                  ),
+                                ).then((_) {
+                                  setState(() {
+                                    usersFuture = fetchUsers();
+                                  });
+                                });
                               },
                             ),
                             IconButton(
