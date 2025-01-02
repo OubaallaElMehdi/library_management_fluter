@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:library_management/models/user.dart';
 import 'package:library_management/services/user_service.dart';
 import 'package:library_management/views/admin/user_managment/update_user.dart';
+import 'package:library_management/widgets/custom_drawer.dart';
 
 class ListUserPage extends StatefulWidget {
   const ListUserPage({super.key});
@@ -33,10 +34,9 @@ class _ListUserPageState extends State<ListUserPage> {
 
   void deleteUser(int userId) async {
     try {
-      // Call the deleteUser function with the userId as a String
       await userService.deleteUser(userId);
       setState(() {
-        usersFuture = fetchUsers(); // Refresh the user list after deletion
+        usersFuture = fetchUsers();
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User deleted successfully')),
@@ -67,7 +67,39 @@ class _ListUserPageState extends State<ListUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Management')),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Manage Users",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 20,
+            ),
+          ),
+        ],
+      ),
+      drawer: const CustomDrawer(role: 'Admin'), // Added CustomDrawer
       body: FutureBuilder<Map<String, dynamic>>(
         future: usersFuture,
         builder: (context, snapshot) {
@@ -102,7 +134,8 @@ class _ListUserPageState extends State<ListUserPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => UpdateUserPage(
-                                        user: Client.fromJson(user)),
+                                      user: Client.fromJson(user),
+                                    ),
                                   ),
                                 ).then((_) {
                                   setState(() {

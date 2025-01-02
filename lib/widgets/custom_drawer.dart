@@ -66,7 +66,7 @@ class CustomDrawer extends StatelessWidget {
                       Icons.manage_accounts,
                       color: Color.fromARGB(255, 4, 95, 169),
                     ),
-                    title: const Text('Book Management Page'),
+                    title: const Text('Manage Books'),
                     onTap: () {
                       Navigator.pushNamed(context, '/admin_manage_book');
                     },
@@ -81,6 +81,7 @@ class CustomDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, '/admin_list_user');
                     },
                   ),
+                  /*
                   ListTile(
                     leading: const Icon(
                       Icons.settings,
@@ -91,6 +92,7 @@ class CustomDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, '/admin-settings');
                     },
                   ),
+                  */
                   ListTile(
                     leading: const Icon(
                       Icons.chat,
@@ -99,6 +101,17 @@ class CustomDrawer extends StatelessWidget {
                     title: const Text('ChatBot'),
                     onTap: () {
                       Navigator.pushNamed(context, '/chatbot');
+                    },
+                  ),
+                ] else ...[
+                  ListTile(
+                    leading: const Icon(
+                      Icons.chat,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('ChatBot'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/ChatBotClient');
                     },
                   ),
                 ],

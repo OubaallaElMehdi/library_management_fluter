@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/views/admin/books/book_details_page.dart';
+import 'package:library_management/widgets/custom_drawer.dart';
 import '../../../services/book_service.dart';
 import '../../../models/book.dart';
 
@@ -49,7 +50,6 @@ class _BookAdminPageState extends State<BookAdminPage> {
   void searchBooks() {
     final query = searchController.text;
     setState(() {
-      //booksFuture = fetchBooks(query: query);
       print(query);
     });
   }
@@ -74,9 +74,38 @@ class _BookAdminPageState extends State<BookAdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Catalogue'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Books Catalog",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 20, // Adjust the size as needed
+            ),
+          ),
+        ],
       ),
+      drawer: const CustomDrawer(role: 'Admin'), // Use CustomDrawer here
       body: Column(
         children: [
           // Search Bar with Button

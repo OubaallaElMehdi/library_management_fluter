@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/views/user/books/book_details_page.dart';
+import 'package:library_management/widgets/custom_drawer.dart';
 import '../../../services/book_service.dart';
 import '../../../models/book.dart';
 
@@ -39,7 +40,7 @@ class _BookUserPageState extends State<BookUserPage> {
   void searchBooks() {
     final query = searchController.text;
     setState(() {
-      //booksFuture = fetchBooks(query: query);
+      // booksFuture = fetchBooks(query: query);
       print(query);
     });
   }
@@ -64,9 +65,38 @@ class _BookUserPageState extends State<BookUserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Catalogue'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Catalog",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 20,
+            ),
+          ),
+        ],
       ),
+      drawer: const CustomDrawer(role: 'User'), // Integrated CustomDrawer
       body: Column(
         children: [
           // Search Bar with Button

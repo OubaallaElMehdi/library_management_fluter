@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:library_management/widgets/custom_drawer.dart';
 
-class ChatBotScreen extends StatefulWidget {
-  const ChatBotScreen({super.key});
+class ChatBotClientScreen extends StatefulWidget {
+  const ChatBotClientScreen({super.key});
 
   @override
-  State<ChatBotScreen> createState() => _ChatBotScreenState();
+  State<ChatBotClientScreen> createState() => _ChatBotClientScreenState();
 }
 
-class _ChatBotScreenState extends State<ChatBotScreen> {
+class _ChatBotClientScreenState extends State<ChatBotClientScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, String>> _messages = [
     {'sender': 'bot', 'text': 'Hi, How can I assist you?'}
@@ -36,22 +37,28 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           ),
         ),
         centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
-            'assets/images/logo.png',
-          ),
-        ),
-        actions: [
-          IconButton(
+        leading: Builder(
+          builder: (context) => IconButton(
             icon: const Icon(
               Icons.menu,
               color: Colors.blue,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 20,
+            ),
           ),
         ],
       ),
+      drawer: const CustomDrawer(role: 'user'),
       body: Column(
         children: [
           Expanded(
@@ -65,10 +72,10 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (isBot)
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 15,
                         backgroundColor: Colors.blue,
-                        child: const Icon(
+                        child: Icon(
                           Icons.person,
                           color: Colors.white,
                           size: 20,
@@ -131,4 +138,4 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   }
 }
 
-void main() => runApp(const MaterialApp(home: ChatBotScreen()));
+void main() => runApp(const MaterialApp(home: ChatBotClientScreen()));

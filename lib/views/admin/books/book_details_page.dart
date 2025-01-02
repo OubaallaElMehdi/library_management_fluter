@@ -25,8 +25,25 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Details'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Book Details',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 20,
+            ),
+          ),
+        ],
       ),
       body: FutureBuilder<Book>(
         future: bookFuture,
@@ -54,6 +71,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Book Cover Image
                   Center(
@@ -103,12 +121,18 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   ElevatedButton(
                     onPressed: () {
                       // Add reserve functionality here
-                      print(book.id);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Reserved book: ${book.title}'),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 4, 130, 233),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 32.0),
+                        vertical: 12.0,
+                        horizontal: 32.0,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
