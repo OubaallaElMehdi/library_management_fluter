@@ -47,8 +47,22 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text,
       );
 
+      // Debug the response structure
+      print('Response: $response');
+
+      // Save the token, username, and email from the response
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response['accessToken']);
+      await prefs.setString('username', response['username']); // Save username
+      await prefs.setString('email', response['email']); // Save email
+
       // Check roles
-      final List roles = response['roles'];
+      final List roles =
+          response['roles'] ?? []; // Default to an empty list if null
+      if (roles.isEmpty) {
+        throw Exception('No roles found in the response.');
+      }
+
       if (roles.contains('ROLE_ADMIN')) {
         Navigator.pushReplacementNamed(context, '/adminDashboard');
       } else if (roles.contains('ROLE_CLIENT')) {
