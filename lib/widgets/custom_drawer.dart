@@ -76,6 +76,16 @@ class CustomDrawer extends StatelessWidget {
                       Icons.manage_accounts,
                       color: Color.fromARGB(255, 4, 95, 169),
                     ),
+                    title: const Text('Manage copys'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/admin_list_copy');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.manage_accounts,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
                     title: const Text('Manage Users'),
                     onTap: () {
                       Navigator.pushNamed(context, '/admin_list_user');

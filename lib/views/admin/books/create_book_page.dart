@@ -1,6 +1,6 @@
-import 'dart:typed_data'; // For Uint8List
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart'; // For picking files on web
+import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import '../../../services/book_service.dart';
 
@@ -21,6 +21,10 @@ class _CreateBookPageState extends State<CreateBookPage> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController numberOfCopiesController =
       TextEditingController();
+
+  // Copies List
+  List<TextEditingController> copyControllers = [];
+  List<Map<String, dynamic>> copies = [];
 
   // Date & availability
   DateTime? selectedEditionDate;
@@ -69,6 +73,19 @@ class _CreateBookPageState extends State<CreateBookPage> {
     }
   }
 
+  void addCopyField() {
+    final controller = TextEditingController();
+    setState(() {
+      copyControllers.add(controller);
+    });
+  }
+
+  void removeCopyField(int index) {
+    setState(() {
+      copyControllers.removeAt(index);
+    });
+  }
+
   Future<void> createBook() async {
     // Validate required fields
     if (codeController.text.isNotEmpty &&
@@ -79,6 +96,25 @@ class _CreateBookPageState extends State<CreateBookPage> {
         selectedAuthorId != null &&
         selectedCategoryId != null &&
         _imageBytes != null) {
+      // Collect all copies
+      copies = copyControllers.map((controller) {
+        return {
+          "serialNumber": controller.text,
+          "book": {
+            "code": "",
+            "label": "",
+            "title": "",
+            "editionDate": null,
+            "description": "",
+            "numberOfCopies": null,
+            "available": null,
+            "imageUrl": "",
+            "imageBase64": "",
+            "copies": []
+          }
+        };
+      }).toList();
+
       // Find the selected category object
       final selectedCategory = categories.firstWhere(
         (cat) => cat['id'].toString() == selectedCategoryId,
@@ -95,7 +131,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
         "description": descriptionController.text,
         "numberOfCopies": int.tryParse(numberOfCopiesController.text) ?? 0,
         "available": available,
-        "imageUrl": "", // The server might set or we might get from response
+        "imageUrl": "",
         "author": {
           "id": int.parse(selectedAuthorId!),
         },
@@ -104,7 +140,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
           "label": selectedCategory['label'],
           "code": selectedCategory['code'],
         },
-        "copies": []
+        "copies": copies, // Add copies here
       };
 
       try {
@@ -240,6 +276,30 @@ class _CreateBookPageState extends State<CreateBookPage> {
     );
   }
 
+  Widget _buildCopyFields() {
+    return Column(
+      children: [
+        for (int i = 0; i < copyControllers.length; i++)
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField(
+                    'Serial Number ${i + 1}', copyControllers[i]),
+              ),
+              IconButton(
+                icon: const Icon(Icons.remove_circle, color: Colors.red),
+                onPressed: () => removeCopyField(i),
+              ),
+            ],
+          ),
+        ElevatedButton(
+          onPressed: addCopyField,
+          child: const Text('Add Copy'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,20 +339,18 @@ class _CreateBookPageState extends State<CreateBookPage> {
             const SizedBox(height: 16.0),
             _buildCategoryDropdown(),
             const SizedBox(height: 16.0),
-
-            // Show a preview of the chosen image
+            _buildCopyFields(), // Add Copy Fields Here
+            const SizedBox(height: 16.0),
             if (_imageBytes != null)
               Image.memory(
                 _imageBytes!,
                 width: 100,
                 height: 100,
               ),
-
             ElevatedButton(
               onPressed: _pickImage,
               child: const Text('Pick Image'),
             ),
-
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: createBook,
