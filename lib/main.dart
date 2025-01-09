@@ -3,6 +3,7 @@ import 'package:library_management/models/user.dart';
 import 'package:library_management/views/admin/admin_dashboard.dart';
 import 'package:library_management/views/admin/books/book_management.dart';
 import 'package:library_management/views/admin/copys/copy_admin_page.dart';
+import 'package:library_management/views/admin/reservation/reservation_list_page.dart';
 import 'package:library_management/views/admin/user_managment/list_user.dart';
 import 'package:library_management/views/admin/user_managment/update_user.dart';
 import 'package:library_management/views/admin/chatbot_screen.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/admin_list_book': (context) => const BookAdminPage(),
         '/user-list-book': (context) => const BookUserPage(),
         '/admin_list_copy': (context) => const CopyAdminPage(),
+        '/admin_list_reservations': (context) => const AdminReservationPage(),
         // '/reservation': (context) => const ReservationPage(bookId: 0),
         '/chatbot': (context) => const ChatBotScreen(),
         '/ChatBotClient': (context) => const ChatBotClientScreen(),

@@ -15,7 +15,7 @@ class _BookAdminPageState extends State<BookAdminPage> {
   final BookService bookService = BookService();
   late Future<List<Book>> booksFuture;
   int currentPage = 0;
-  final int maxResults = 2;
+  final int maxResults = 5;
 
   final Map<int, bool> favoriteStates = {};
   final TextEditingController searchController = TextEditingController();

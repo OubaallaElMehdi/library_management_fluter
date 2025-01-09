@@ -15,7 +15,7 @@ class _CopyAdminPageState extends State<CopyAdminPage> {
 
   late Future<List<Copy>> copiesFuture;
   int currentPage = 0;
-  final int maxResults = 2; // Or however many you want per page
+  final int maxResults = 5; // Or however many you want per page
 
   @override
   void initState() {

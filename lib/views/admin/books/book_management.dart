@@ -16,7 +16,7 @@ class _BookManagementPageState extends State<BookManagementPage> {
   final BookService bookService = BookService();
   late Future<List<Book>> booksFuture;
   int currentPage = 0;
-  final int maxResults = 2;
+  final int maxResults = 5;
   final TextEditingController searchController = TextEditingController();
 
   @override

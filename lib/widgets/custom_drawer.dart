@@ -83,6 +83,16 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(
+                      Icons.book_online,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('Manage Reservations'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/admin_list_reservations');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
                       Icons.manage_accounts,
                       color: Color.fromARGB(255, 4, 95, 169),
                     ),
