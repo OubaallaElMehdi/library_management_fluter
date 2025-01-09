@@ -24,17 +24,23 @@ class Book {
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {
+    // Safely extract author JSON
+    final authorJson = json['author'];
+    // If `author` is null or `fullName` is null, fallback to an empty string.
+    final safeAuthorName =
+        authorJson != null ? (authorJson['fullName'] ?? '') : '';
+
     return Book(
-      id: json['id'],
-      label: json['label'],
-      code: json['code'],
-      title: json['title'],
-      editionDate: json['editionDate'],
-      description: json['description'],
-      numberOfCopies: json['numberOfCopies'],
-      available: json['available'],
-      imageUrl: json['imageUrl'],
-      authorName: json['author']['fullName'],
+      id: json['id'] ?? 0,
+      label: json['label'] ?? '',
+      code: json['code'] ?? '',
+      title: json['title'] ?? '',
+      editionDate: json['editionDate'] ?? '',
+      description: json['description'] ?? '',
+      numberOfCopies: json['numberOfCopies'] ?? 0,
+      available: json['available'] ?? false,
+      imageUrl: json['imageUrl'] ?? '',
+      authorName: safeAuthorName,
     );
   }
 

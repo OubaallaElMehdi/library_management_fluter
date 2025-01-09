@@ -5,7 +5,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserService {
   final String baseUrl = 'http://localhost:8037/api/user';
 
-  // Fetch paginated users
+  // 1) Fetch a user by username
+  Future<Map<String, dynamic>> findByUsername(String username) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    // Example: GET /api/user/user-name/{username}
+    final response = await http.get(
+      Uri.parse('$baseUrl/user-name/$username'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns { "id": 3, "username": "mehdi", ... }
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to find user by username: ${response.body}');
+    }
+  }
+
+  // 2) Fetch paginated users (existing)
   Future<Map<String, dynamic>> fetchPaginatedUsers({
     required int page,
     required int maxResults,
@@ -24,7 +48,11 @@ class UserService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({"page": page, "maxResults": maxResults}),
+      body: jsonEncode({
+        "page": page,
+        "maxResults": maxResults,
+        // If you need sortOrder, sortField in body, add them here
+      }),
     );
 
     if (response.statusCode == 200) {
@@ -34,7 +62,7 @@ class UserService {
     }
   }
 
-  // Update user
+  // 3) Update user (existing)
   Future<void> updateUser(Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
@@ -44,12 +72,12 @@ class UserService {
     }
 
     final response = await http.put(
-      Uri.parse('$baseUrl/'), // Correct endpoint: no need for `/id/`
+      Uri.parse('$baseUrl/'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(userData), // Ensure the userData is correct
+      body: jsonEncode(userData),
     );
 
     if (response.statusCode != 200) {
@@ -57,19 +85,16 @@ class UserService {
     }
   }
 
-// Delete user
+  // 4) Delete user (existing)
   Future<void> deleteUser(int userId) async {
-    // userId is now a String
     final prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
-
     if (token == null) {
       throw Exception('User is not authenticated');
     }
 
     final response = await http.delete(
-      Uri.parse(
-          '$baseUrl/id/$userId'), // userId should be passed as a String in the URL
+      Uri.parse('$baseUrl/id/$userId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

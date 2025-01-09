@@ -15,16 +15,20 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      await saveToken(data['accessToken']); // Save the token
+      // Save token, username, and email
+      await saveToken(data['accessToken'], data['username'], data['email']);
       return data;
     } else {
       throw Exception('Login failed: ${response.body}');
     }
   }
 
-  Future<void> saveToken(String token) async {
+  // Updated saveToken method to include username and email
+  Future<void> saveToken(String token, String username, String email) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
+    await prefs.setString('token', token); // Save token
+    await prefs.setString('username', username); // Save username
+    await prefs.setString('email', email); // Save email
   }
 }
 
@@ -49,12 +53,6 @@ class _LoginPageState extends State<LoginPage> {
 
       // Debug the response structure
       print('Response: $response');
-
-      // Save the token, username, and email from the response
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', response['accessToken']);
-      await prefs.setString('username', response['username']); // Save username
-      await prefs.setString('email', response['email']); // Save email
 
       // Check roles
       final List roles =
