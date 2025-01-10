@@ -94,7 +94,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
             ),
             DropdownButton<String>(
               value: selectedRole,
-              items: ['ROLE_ADMIN', 'ROLE_USER']
+              items: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_CLIENT']
                   .map((role) => DropdownMenuItem<String>(
                         value: role,
                         child: Text(role),
