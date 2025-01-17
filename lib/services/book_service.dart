@@ -6,7 +6,7 @@ import 'package:library_management/models/book.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookService {
-  final String baseUrl = 'http://localhost:8036';
+  final String baseUrl = 'http://localhost:8090/BOOKS-SERVICE';
 
   /// If you still need normal JSON-only create:
   Future<void> createBook(Map<String, dynamic> bookData) async {

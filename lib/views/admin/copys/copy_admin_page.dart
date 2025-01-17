@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:library_management/services/CopyService.dart';
 import 'package:library_management/models/copy.dart';
 import 'package:library_management/views/admin/copys/copy_create_page.dart';
+import 'package:library_management/widgets/custom_drawer.dart'; // Import the CustomDrawer widget
 
 class CopyAdminPage extends StatefulWidget {
   const CopyAdminPage({super.key});
@@ -30,7 +31,6 @@ class _CopyAdminPageState extends State<CopyAdminPage> {
       sortOrder: 'ASC',
       sortField: 'serialNumber', // or another field
     );
-    // response = { "list": [...], "dataSize": X }
     final List<dynamic> data = response['list'];
     return data.map((json) => Copy.fromJson(json)).toList();
   }
@@ -52,12 +52,10 @@ class _CopyAdminPageState extends State<CopyAdminPage> {
   }
 
   void goToCreateCopyPage() async {
-    // Navigate to create copy page
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CreateCopyPage()),
     );
-    // After returning, refresh list
     setState(() {
       copiesFuture = fetchCopies();
     });
@@ -67,12 +65,40 @@ class _CopyAdminPageState extends State<CopyAdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Copies'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Manage Copies",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 20,
+            ),
+          ),
+        ],
       ),
+      drawer: const CustomDrawer(role: 'Admin'), // Add the drawer here
       body: Column(
         children: [
-          // Button to create copy
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
@@ -105,8 +131,6 @@ class _CopyAdminPageState extends State<CopyAdminPage> {
                   itemBuilder: (context, index) {
                     final copy = copies[index];
                     final bookMap = copy.book;
-                    // bookMap = { "id":..., "title":..., etc. }
-
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.blue[50],
@@ -120,7 +144,6 @@ class _CopyAdminPageState extends State<CopyAdminPage> {
               },
             ),
           ),
-          // Pagination
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             decoration: BoxDecoration(

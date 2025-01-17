@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:library_management/views/guest_books_page.dart';
 import 'package:library_management/models/user.dart';
 import 'package:library_management/views/admin/admin_dashboard.dart';
 import 'package:library_management/views/admin/books/book_management.dart';
@@ -11,6 +12,8 @@ import 'package:library_management/views/user/chatbot_screen.dart';
 import 'package:library_management/views/user/user_dashboard.dart';
 import 'package:library_management/views/admin/books/book_admin_page.dart';
 import 'package:library_management/views/user/books/book_user_page.dart';
+import 'package:library_management/views/verification_screen.dart';
+import 'package:library_management/views/welcome.dart';
 import 'views/login_screen.dart';
 import 'views/register_screen.dart';
 // import 'views/user/reservation/reservation_page.dart';
@@ -28,7 +31,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginScreen(),
+        '/': (context) => const WelcomePage(),
+
+        '/guest-books': (context) => const GuestBooksPage(),
+
+        '/login': (context) => const LoginScreen(),
         '/register': (context) => RegisterPage(),
         '/admin': (context) => const AdminDashboard(),
         '/user': (context) => const UserDashboard(),
@@ -41,6 +48,8 @@ class MyApp extends StatelessWidget {
         '/user-list-book': (context) => const BookUserPage(),
         '/admin_list_copy': (context) => const CopyAdminPage(),
         '/admin_list_reservations': (context) => const AdminReservationPage(),
+        '/verify': (context) => VerificationPage(username: ''), // Placeholder
+
         // '/reservation': (context) => const ReservationPage(bookId: 0),
         '/chatbot': (context) => const ChatBotScreen(),
         '/ChatBotClient': (context) => const ChatBotClientScreen(),

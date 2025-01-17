@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:library_management/services/resvationadmin_service.dart';
 import 'package:library_management/views/admin/reservation/reservation_detail_page.dart';
+import 'package:library_management/widgets/custom_drawer.dart'; // Import the CustomDrawer widget
 
 class AdminReservationPage extends StatefulWidget {
   const AdminReservationPage({super.key});
@@ -47,7 +48,28 @@ class _AdminReservationPageState extends State<AdminReservationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Reservations')),
+      appBar: AppBar(
+        title: const Text(
+          'Reservations',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+      ),
+      drawer: const CustomDrawer(role: 'Admin'), // Add the drawer here
       body: FutureBuilder<Map<String, dynamic>>(
         future: reservationsFuture,
         builder: (context, snapshot) {
@@ -84,7 +106,6 @@ class _AdminReservationPageState extends State<AdminReservationPage> {
                                   reservation: {
                                     "id": id,
                                     "code": code,
-                                    // If your server needs more fields, pass them here
                                   },
                                 ),
                               ),

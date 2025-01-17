@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CopyService {
-  final String baseUrl = 'http://localhost:8036';
+  final String baseUrl = 'http://localhost:8090/BOOKS-SERVICE';
 
   Future<Map<String, dynamic>> fetchPaginatedCopies({
     required int page,
@@ -33,7 +33,7 @@ class CopyService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body); 
+      return jsonDecode(response.body);
       // returns { list: [...], dataSize: X }
     } else {
       throw Exception('Failed to fetch copies: ${response.body}');

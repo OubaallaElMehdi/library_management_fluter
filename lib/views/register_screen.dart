@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:library_management/views/verification_screen.dart';
 
 class RegisterPage extends StatelessWidget {
   final String baseUrl =
-      'http://localhost:8037'; // Update with your API base URL
+      'http://localhost:8090'; // Update with your API base URL
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -18,7 +19,7 @@ class RegisterPage extends StatelessWidget {
   Future<void> handleRegister(BuildContext context) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/register/admin'),
+        Uri.parse('$baseUrl/AUTH-SERVICE/register/client'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'firstName': firstNameController.text,
@@ -31,14 +32,17 @@ class RegisterPage extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:
-                Text(responseBody['message'] ?? 'Registration successful!'),
+          const SnackBar(content: Text('Registration successful!')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationPage(
+              username: usernameController.text,
+            ),
           ),
         );
-        Navigator.pop(context, '/register');
       } else {
         final errorBody = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(

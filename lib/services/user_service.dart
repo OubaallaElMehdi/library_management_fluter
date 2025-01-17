@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  final String baseUrl = 'http://localhost:8037/api/user';
+  final String baseUrl = 'http://localhost:8090/AUTH-SERVICE/api/user';
 
   // 1) Fetch a user by username
   Future<Map<String, dynamic>> findByUsername(String username) async {

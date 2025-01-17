@@ -4,11 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminReservationService {
   final String reservationBaseUrl =
-      'http://localhost:8037/api/admin/reservation/';
+      'http://localhost:8090/RESERVATION-SERVICE/api/admin/reservation/';
   final String reservationItemUrl =
-      'http://localhost:8037/api/admin/reservationItem/';
-  final String copyBaseUrl = 'http://localhost:8036/api/admin/copy/';
-  final String bookBaseUrl = 'http://localhost:8036/api/admin/book/';
+      'http://localhost:8090/RESERVATION-SERVICE/api/admin/reservationItem/';
+  final String copyBaseUrl =
+      'http://localhost:8090/BOOKS-SERVICE/api/admin/copy/';
+  final String bookBaseUrl =
+      'http://localhost:8090/BOOKS-SERVICE/api/admin/book/';
 
   /// Fetch paginated reservations
   Future<Map<String, dynamic>> fetchPaginatedReservations({
