@@ -22,22 +22,16 @@ class _GuestBooksPageState extends State<GuestBooksPage> {
   }
 
   Future<List<Book>> fetchBooks() async {
-    try {
-      print("Fetching books for page $currentPage");
-      final response = await guestBookService.fetchPaginatedBooks(
-        endpoint: '/api/client/book/find-paginated-by-criteria',
-        page: currentPage,
-        maxResults: maxResults,
-        sortOrder: 'ASC',
-        sortField: 'title',
-      );
+    final response = await guestBookService.fetchPaginatedBooks(
+      endpoint: '/api/client/book/find-paginated-by-criteria',
+      page: currentPage,
+      maxResults: maxResults,
+      sortOrder: 'ASC',
+      sortField: 'title',
+    );
 
-      final List<dynamic> data = response['list'];
-      return data.map((json) => Book.fromJson(json)).toList();
-    } catch (error) {
-      print("Error fetching books: $error");
-      rethrow;
-    }
+    final List<dynamic> data = response['list'];
+    return data.map((json) => Book.fromJson(json)).toList();
   }
 
   void loadNextPage() {
@@ -59,164 +53,189 @@ class _GuestBooksPageState extends State<GuestBooksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200], // Light background
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Custom App Bar
-            Container(
-              color: Colors.blue,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Books Catalog',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, '/login'); // Navigate to login
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, '/register'); // Navigate to register
-                        },
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+      backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Books Catalog",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pushNamed(context, '/login'),
+            child: const Text(
+              'Login',
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
             ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pushNamed(context, '/register'),
+            child: const Text(
+              'Register',
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<List<Book>>(
+              future: booksFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No books available.',
+                      style:
+                          TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+                    ),
+                  );
+                }
 
-            // Book List
-            Expanded(
-              child: FutureBuilder<List<Book>>(
-                future: booksFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        'Error: ${snapshot.error}',
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No books available.',
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
-                      ),
-                    );
-                  }
+                final books = snapshot.data!;
+                return ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: books.length,
+                  itemBuilder: (context, index) {
+                    final book = books[index];
 
-                  final books = snapshot.data!;
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      final book = books[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        elevation: 4,
-                        child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.network(
-                              book.imageUrl.isNotEmpty
-                                  ? book.imageUrl
-                                  : 'https://via.placeholder.com/100',
-                              width: 60,
-                              height: 80,
-                              fit: BoxFit.cover,
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      color: Colors.blue[50],
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Book Cover Image
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                book.imageUrl.isNotEmpty
+                                    ? book.imageUrl
+                                    : 'https://via.placeholder.com/100',
+                                width: 80,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          title: Text(
-                            book.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                            const SizedBox(width: 12.0),
+                            // Book Details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    book.title,
+                                    style: const TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Text(
+                                    'By ${book.authorName}',
+                                    style: const TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Text(
+                                    book.available
+                                        ? 'Available'
+                                        : 'Unavailable',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: book.available
+                                          ? Colors.green
+                                          : Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('By ${book.authorName}'),
-                              Text(
-                                book.available ? 'Available' : 'Unavailable',
-                                style: TextStyle(
-                                  color: book.available
-                                      ? Colors.green
-                                      : Colors.red,
-                                  fontWeight: FontWeight.w600,
+                            const SizedBox(width: 12.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
                               ),
-                            ],
-                          ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, '/login'); // Navigate to login
-                          },
+                              child: const Text(
+                                'View',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  );
-                },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          // Pagination Controls
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            decoration: BoxDecoration(
+              color: Colors.blueGrey[50],
+              border: const Border(
+                top: BorderSide(color: Colors.grey),
               ),
             ),
-
-            // Pagination Controls
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    color: currentPage > 0 ? Colors.blue : Colors.grey,
-                    onPressed: currentPage > 0 ? loadPreviousPage : null,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  color: currentPage > 0 ? Colors.blue : Colors.grey,
+                  onPressed: currentPage > 0 ? loadPreviousPage : null,
+                ),
+                Text(
+                  'Page ${currentPage + 1}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                  Text(
-                    'Page ${currentPage + 1}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward),
-                    color: Colors.blue,
-                    onPressed: loadNextPage,
-                  ),
-                ],
-              ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  color: Colors.blue,
+                  onPressed: loadNextPage,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
