@@ -95,7 +95,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReservationPage(
-                          bookCode: book.code, // <-- ADDED THIS PARAM
+                          bookLabel: book.code, // <-- ADDED THIS PARAM
                         ),
                       ),
                     );

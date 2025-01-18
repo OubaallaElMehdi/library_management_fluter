@@ -9,6 +9,7 @@ import 'package:library_management/views/admin/user_managment/list_user.dart';
 import 'package:library_management/views/admin/user_managment/update_user.dart';
 import 'package:library_management/views/admin/chatbot_screen.dart';
 import 'package:library_management/views/user/chatbot_screen.dart';
+import 'package:library_management/views/user/reservation/resevation_client_page.dart';
 import 'package:library_management/views/user/user_dashboard.dart';
 import 'package:library_management/views/admin/books/book_admin_page.dart';
 import 'package:library_management/views/user/books/book_user_page.dart';
@@ -53,6 +54,8 @@ class MyApp extends StatelessWidget {
         // '/reservation': (context) => const ReservationPage(bookId: 0),
         '/chatbot': (context) => const ChatBotScreen(),
         '/ChatBotClient': (context) => const ChatBotClientScreen(),
+        '/client-reservations': (context) =>
+            const ReservationClientPage(), // No `clientId` argument
       },
       onGenerateRoute: (settings) {
         // Check if the route is for updating a user

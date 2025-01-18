@@ -126,6 +126,16 @@ class CustomDrawer extends StatelessWidget {
                 ] else ...[
                   ListTile(
                     leading: const Icon(
+                      Icons.bookmark,
+                      color: Color.fromARGB(255, 4, 95, 169),
+                    ),
+                    title: const Text('My Reservations'),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/client-reservations');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
                       Icons.chat,
                       color: Color.fromARGB(255, 4, 95, 169),
                     ),

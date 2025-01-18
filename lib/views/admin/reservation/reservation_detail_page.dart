@@ -29,7 +29,7 @@ class _ReservationDetailPageState extends State<ReservationDetailPage> {
   /// 1) Find the Book ID by code
   /// 2) Fetch copies by book ID
   Future<List<dynamic>> _loadCopies() async {
-    final bookCode = widget.reservation['code'] as String?;
+    final bookCode = widget.reservation['booklabel'] as String?;
     if (bookCode == null) {
       throw Exception(
           "No 'code' in reservation => can't fetch book or copies.");
@@ -83,7 +83,7 @@ class _ReservationDetailPageState extends State<ReservationDetailPage> {
   @override
   Widget build(BuildContext context) {
     final reservationId = widget.reservation['id'];
-    final reservationCode = widget.reservation['code'] ?? '';
+    final reservationCode = widget.reservation['booklabel'] ?? '';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reservation Detail')),

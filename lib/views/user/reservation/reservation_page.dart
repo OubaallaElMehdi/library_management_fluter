@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:library_management/models/reservation.dart';
+import 'package:library_management/models/user.dart';
 import 'package:library_management/services/reservation_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:library_management/services/auth_service.dart';
 import 'package:intl/intl.dart';
 
 class ReservationPage extends StatefulWidget {
-  // ADD THIS PARAM TO RECEIVE THE BOOK CODE FROM BOOKDETAILSPAGE
-  final String bookCode;
+  final String bookLabel;
 
-  const ReservationPage({super.key, required this.bookCode});
+  const ReservationPage({super.key, required this.bookLabel});
 
   @override
   State<ReservationPage> createState() => _ReservationPageState();
@@ -15,32 +16,50 @@ class ReservationPage extends StatefulWidget {
 
 class _ReservationPageState extends State<ReservationPage> {
   final ReservationService reservationService = ReservationService();
+  final AuthService authService = AuthService();
 
-  // Controllers
-  final TextEditingController codeController = TextEditingController();
+  final TextEditingController bookLabelController = TextEditingController();
   final TextEditingController requestDateController = TextEditingController();
   final TextEditingController theoreticalReturnDateController =
       TextEditingController();
 
   DateTime? pickedRequestDate;
   DateTime? pickedReturnDate;
+  Client? client;
+  String reservationCode = '';
 
   @override
   void initState() {
     super.initState();
-
-    // PRE-FILL THE CODE WITH THE PASSED-IN BOOK CODE
-    codeController.text = widget.bookCode;
+    bookLabelController.text = widget.bookLabel;
+    reservationCode = Reservation.generateCode();
+    _loadClientDetails();
   }
 
-  // Convert date to "2025-01-07T18:22:25.000Z"
+  Future<void> _loadClientDetails() async {
+    try {
+      final username = await authService.getClientUsername();
+      if (username != null) {
+        final fetchedClient = await authService.getClientDetails(username);
+        setState(() {
+          client = fetchedClient;
+        });
+      } else {
+        throw Exception('Failed to retrieve username');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading client details: $e')),
+      );
+    }
+  }
+
   String _toBackendDate(DateTime date) {
     final String formatted =
         DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(date);
     return "${formatted}Z";
   }
 
-  // Function to pick date
   Future<void> _pickDate({required bool isReturnDate}) async {
     final initDate = isReturnDate
         ? (pickedReturnDate ?? DateTime.now())
@@ -56,38 +75,43 @@ class _ReservationPageState extends State<ReservationPage> {
       setState(() {
         if (isReturnDate) {
           pickedReturnDate = chosen;
-          final isoDate = _toBackendDate(chosen);
-          theoreticalReturnDateController.text = isoDate;
+          theoreticalReturnDateController.text = _toBackendDate(chosen);
         } else {
           pickedRequestDate = chosen;
-          final isoDate = _toBackendDate(chosen);
-          requestDateController.text = isoDate;
+          requestDateController.text = _toBackendDate(chosen);
         }
       });
     }
   }
 
   Future<void> createReservation() async {
+    if (client == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Client details not loaded')),
+      );
+      return;
+    }
+
     try {
-      final reservationData = {
-        "code": codeController.text,
-        "requestDate": requestDateController.text,
-        "theoreticalReturnDate": theoreticalReturnDateController.text,
-        "effectiveReturnDate": null,
-        "reservationItems": [],
-        "client": {
-          "id": 2,
-          "credentialsNonExpired": true,
-          "enabled": true,
-          "email": "client",
-          "accountNonExpired": true,
-          "accountNonLocked": true,
-          "username": "client",
-          "passwordChanged": false
-        }
+      // Prepare the client data for the request
+      final clientData = {
+        'id': client!.id,
+        'email': client!.email,
+        'username': client!.username,
       };
 
-      await reservationService.createReservation(reservationData);
+      // Create the reservation object
+      final reservation = Reservation(
+        booklabel: bookLabelController.text,
+        requestDate: requestDateController.text,
+        theoreticalReturnDate: theoreticalReturnDateController.text,
+        effectiveReturnDate: null,
+        reservationItems: [], // Add items if necessary
+        client: clientData, // Send only the required fields
+        code: reservationCode,
+      );
+
+      await reservationService.createReservation(reservation.toJson());
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Reservation successfully created')),
@@ -111,14 +135,18 @@ class _ReservationPageState extends State<ReservationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Code
             TextField(
-              controller: codeController,
+              controller: TextEditingController(text: reservationCode),
+              readOnly: true,
               decoration: const InputDecoration(labelText: 'Reservation Code'),
             ),
             const SizedBox(height: 16),
-
-            // Request Date
+            TextField(
+              controller: bookLabelController,
+              readOnly: true,
+              decoration: const InputDecoration(labelText: 'Book Label'),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: requestDateController,
               readOnly: true,
@@ -127,8 +155,6 @@ class _ReservationPageState extends State<ReservationPage> {
               onTap: () => _pickDate(isReturnDate: false),
             ),
             const SizedBox(height: 16),
-
-            // Theoretical Return Date
             TextField(
               controller: theoreticalReturnDateController,
               readOnly: true,
@@ -137,7 +163,6 @@ class _ReservationPageState extends State<ReservationPage> {
               onTap: () => _pickDate(isReturnDate: true),
             ),
             const SizedBox(height: 32),
-
             ElevatedButton(
               onPressed: createReservation,
               style: ElevatedButton.styleFrom(

@@ -89,13 +89,13 @@ class _AdminReservationPageState extends State<AdminReservationPage> {
                   itemBuilder: (context, index) {
                     final reservation = reservations[index];
                     final id = reservation['id'];
-                    final code = reservation['code'] ?? '';
+                    final booklabel = reservation['booklabel'] ?? '';
 
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
                         title: Text('Reservation ID: $id'),
-                        subtitle: Text('Code: $code'),
+                        subtitle: Text('booklabel: $booklabel'),
                         trailing: ElevatedButton(
                           onPressed: () {
                             // Navigate to detail page
@@ -105,7 +105,7 @@ class _AdminReservationPageState extends State<AdminReservationPage> {
                                 builder: (context) => ReservationDetailPage(
                                   reservation: {
                                     "id": id,
-                                    "code": code,
+                                    "booklabel": booklabel,
                                   },
                                 ),
                               ),
