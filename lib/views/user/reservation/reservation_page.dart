@@ -102,6 +102,7 @@ class _ReservationPageState extends State<ReservationPage> {
 
       // Create the reservation object
       final reservation = Reservation(
+        
         booklabel: bookLabelController.text,
         requestDate: requestDateController.text,
         theoreticalReturnDate: theoreticalReturnDateController.text,

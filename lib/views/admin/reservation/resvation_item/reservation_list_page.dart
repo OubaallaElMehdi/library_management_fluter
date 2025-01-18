@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:library_management/services/resvationadmin_service.dart';
-import 'package:library_management/views/admin/reservation/reservation_detail_page.dart';
+import 'package:library_management/services/resvation_item_admin_service.dart';
+import 'package:library_management/views/admin/reservation/resvation_item/reservation_detail_page.dart';
 import 'package:library_management/widgets/custom_drawer.dart'; // Import the CustomDrawer widget
 
 class AdminReservationPage extends StatefulWidget {
@@ -90,12 +90,16 @@ class _AdminReservationPageState extends State<AdminReservationPage> {
                     final reservation = reservations[index];
                     final id = reservation['id'];
                     final booklabel = reservation['booklabel'] ?? '';
-
+                    final client = reservation['client'] ?? {};
+                    final username =
+                        client['username'] ?? ''; // Fetch the username
+                    // Access the client object
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
                         title: Text('Reservation ID: $id'),
-                        subtitle: Text('booklabel: $booklabel'),
+                        subtitle: Text(
+                            'Book Label: $booklabel\nClient Username: $username'),
                         trailing: ElevatedButton(
                           onPressed: () {
                             // Navigate to detail page
@@ -106,6 +110,7 @@ class _AdminReservationPageState extends State<AdminReservationPage> {
                                   reservation: {
                                     "id": id,
                                     "booklabel": booklabel,
+                                    "username": username,
                                   },
                                 ),
                               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:library_management/services/resvationadmin_service.dart';
+import 'package:library_management/services/resvation_item_admin_service.dart';
 
 class ReservationDetailPage extends StatefulWidget {
   final Map<String, dynamic> reservation;
